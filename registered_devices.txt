@@ -1,0 +1,9 @@
+[
+  {
+    "hostName": "SP4399",
+    "firmwareVersion": "1.0.11",
+    "macAddress": "C8:C9:A3:A1:5A:3F",
+    "wifiSignalStrength": -38,
+    "ipAddress": "192.168.0.109"
+  }
+]
