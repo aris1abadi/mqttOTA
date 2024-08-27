@@ -20,6 +20,7 @@ const mqtt = require("mqtt");
 //	server: http
 //});
 const os = require('os');
+const { match } = require('assert');
 //const expressWs = require('express-ws'); 
 //expressWs(app);
 const lastCommands = {};
@@ -38,7 +39,7 @@ const heartbeatTimeout = 20000;
 
 const subMqtt = mqttPrefix + "-out/#"
 const pubMqtt = mqttPrefix + "-in/"
-let clientId = '---'
+let clientId = 'abadinet' + Math.floor(Math.random() * 1000);
 //const host = 'ws://abadinet.my.id:2020'
 //const host = 'wss://node-red.balingtansmart.my.id/ws'    
 //const host = 'wss://' + get(brokerUseStore) + '/mqtt:' + get(brokerPortUseStore); 
@@ -69,9 +70,11 @@ client.on('error', (err) => {
 	console.log(err)
 	client.end()
 })
-client.on('disconnect', () => {
-	mqttStatus.set(0);
+client.on('disconnect', () => {	
 	console.log('client disconect')
+	client.end()
+	setTimeout(()=>client.reconnect(),5000);
+
 })
 
 client.on('connect', () => {
@@ -94,7 +97,7 @@ client.on('close', () => {
 
 function kirimKeDevice(deviceId, cmd, msg) {
 	//topic abadinet-in/SPxxxx/serverUpdate/0/cmd
-	const pubTopic = pubMqtt + deviceId + '/serverUpdate/' + cmd;
+	const pubTopic = pubMqtt + deviceId + '/serverUpdate/0/' + cmd;
 	client.publish(pubTopic, msg);
 }
 
@@ -368,6 +371,7 @@ function registerDevice(dta) {
 }
 
 function cekUpdateAvilable(hostName){
+	console.log('update cek ' + hostName)
 	const updateAvailable = firmwareUpdates[hostName] === true;
 	if (updateAvailable) {
 		// Clear the update flag if update is available
